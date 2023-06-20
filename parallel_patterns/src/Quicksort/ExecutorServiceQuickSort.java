@@ -19,7 +19,7 @@ public class ExecutorServiceQuickSort {
             } else {
                 SequentialQuickSort.quickSort(array, start, end);
             }
-            executorService.shutdown();
+
         }
     }
 
