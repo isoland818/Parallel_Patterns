@@ -20,6 +20,10 @@ public class ExecutorServiceQuickSort {
                 executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, executorService));
                 executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, executorService));
             }
+<<<<<<< HEAD
+=======
+
+>>>>>>> be3c24e771a5c786c48a578bb8e3a2e21745cc8f
         }
     }
 
