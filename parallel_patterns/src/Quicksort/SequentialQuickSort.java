@@ -1,23 +1,13 @@
 package Quicksort;
 
 public class SequentialQuickSort {
-
-    // Function to perform Quick Sort
-    public static void quickSort(int[] array, int start, int end) {
-        if (array == null || array.length == 0) {
-            return;
-        }
-        int len = array.length;
-        quickSortHelper(array, start, end);
-    }
-
     // Helper function for Quick Sort
-    private static void quickSortHelper(int[] array, int start, int end) {
+    public static void quickSort(int[] array, int start, int end) {
         if (start < end) {
             int pivotIndex = partition(array, start, end);
 
-            quickSortHelper(array, start, pivotIndex - 1);
-            quickSortHelper(array, pivotIndex + 1, start);
+            quickSort(array, start, pivotIndex - 1);
+            quickSort(array, pivotIndex + 1, end);
         }
     }
 

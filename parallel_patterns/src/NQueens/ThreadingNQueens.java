@@ -1,43 +1,51 @@
 package NQueens;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.RecursiveTask;
 
-public class ForkJoinNQueens extends RecursiveTask<List<int[][]>> {
-
-    private final int n;
-
-    private final int col;
+public class ThreadingNQueens extends Thread{
+    private int n;
+    private int col;
+    private int granularity;
     private int[][] board;
-    private final int granularity;
 
-    public ForkJoinNQueens(int n, int col, int granularity, int[][] board){
+    private List<int[][]> solutions;
+
+    public ThreadingNQueens(int n, int col, int granularity, int[][] board) {
         this.n=n;
         this.col=col;
         this.granularity=granularity;
         this.board=copyBoard(board);
+        this.solutions=new ArrayList<>();
     }
+
     @Override
-    protected List<int[][]> compute() {
-        List<int[][]> solutions = new ArrayList<>();
-        if (n-col<=granularity) {
+    public void run(){
+        if(n-col<=granularity){
             SequentialNQueens.solveNQueens(board, col, n, solutions);
-            return solutions;
+            return;
         }
-        List<ForkJoinNQueens> subTasks = new ArrayList<>();
-        for (int i=0; i<n; i++){
-            if (isSafe(board, i, col, n)){
+        List<ThreadingNQueens> subtasks = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if(isSafe(board, i, col, n)){
                 board[i][col]=1;
-                subTasks.add(new ForkJoinNQueens(n, col+1, granularity, board));
+                ThreadingNQueens subtask = new ThreadingNQueens(n, col+1, granularity, board);
+                subtask.start();
+                subtasks.add(subtask);
                 board[i][col]=0;
             }
         }
-        invokeAll(subTasks);
-        for (ForkJoinNQueens subTask: subTasks) {
-            solutions.addAll(subTask.join());
+
+        try{
+            for (ThreadingNQueens subtask: subtasks) {
+                subtask.join();
+                solutions.addAll(subtask.getSolutions());
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
+    public List<int[][]> getSolutions(){
         return solutions;
     }
 

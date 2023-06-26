@@ -7,11 +7,11 @@ public class SequentialNQueens {
     public static List<int[][]> solveNQueens(int n) {
         List<int[][]> solutions = new ArrayList<>();
         int[][] board = new int[n][n];
-        solveNQueensHelper(board, 0, n, solutions);
+        solveNQueens(board, 0, n, solutions);
         return solutions;
     }
 
-    private static void solveNQueensHelper(int[][] board, int col, int n, List<int[][]> solutions) {
+    public static void solveNQueens(int[][] board, int col, int n, List<int[][]> solutions) {
         if (col >= n) {
             solutions.add(copyBoard(board));
             return;
@@ -20,7 +20,7 @@ public class SequentialNQueens {
         for (int i = 0; i < n; i++) {
             if (isSafe(board, i, col, n)) {
                 board[i][col] = 1;
-                solveNQueensHelper(board, col + 1, n, solutions);
+                solveNQueens(board, col + 1, n, solutions);
                 board[i][col] = 0;
             }
         }
@@ -63,4 +63,12 @@ public class SequentialNQueens {
     }
 
 
+    public static void printBoard(int[][] board, int n){
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(board[i][j]+"  ");
+            }
+            System.out.println();
+        }
+    }
 }

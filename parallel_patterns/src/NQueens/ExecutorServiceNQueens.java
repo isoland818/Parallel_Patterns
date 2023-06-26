@@ -1,42 +1,36 @@
 package NQueens;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.concurrent.*;
 import java.util.List;
-import java.util.concurrent.RecursiveTask;
 
-public class ForkJoinNQueens extends RecursiveTask<List<int[][]>> {
+public class ExecutorServiceNQueens {
 
-    private final int n;
-
-    private final int col;
-    private int[][] board;
-    private final int granularity;
-
-    public ForkJoinNQueens(int n, int col, int granularity, int[][] board){
-        this.n=n;
-        this.col=col;
-        this.granularity=granularity;
-        this.board=copyBoard(board);
-    }
-    @Override
-    protected List<int[][]> compute() {
+    public static List<int[][]> nQueens (int[][] board, int n, int col, int granularity) throws ExecutionException, InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(n);
         List<int[][]> solutions = new ArrayList<>();
         if (n-col<=granularity) {
             SequentialNQueens.solveNQueens(board, col, n, solutions);
+            System.out.println(solutions.size());
             return solutions;
         }
-        List<ForkJoinNQueens> subTasks = new ArrayList<>();
+        List<Future<List<int[][]>>> futures = new ArrayList<>();
         for (int i=0; i<n; i++){
             if (isSafe(board, i, col, n)){
                 board[i][col]=1;
-                subTasks.add(new ForkJoinNQueens(n, col+1, granularity, board));
+                futures.add(executorService.submit(() -> nQueens(copyBoard(board), n, col+1, granularity)));
                 board[i][col]=0;
             }
         }
-        invokeAll(subTasks);
-        for (ForkJoinNQueens subTask: subTasks) {
-            solutions.addAll(subTask.join());
+        System.out.println("col: "+col+", futures: "+futures.size());
+        executorService.shutdown();
+        for(Future<List<int[][]>> future: futures) {
+            solutions.addAll(future.get());
+        }
+        try{
+            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+        }catch(InterruptedException e){
+            e.printStackTrace();
         }
         return solutions;
     }
@@ -76,4 +70,5 @@ public class ForkJoinNQueens extends RecursiveTask<List<int[][]>> {
         }
         return copy;
     }
+
 }

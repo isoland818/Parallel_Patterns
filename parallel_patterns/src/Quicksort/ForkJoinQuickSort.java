@@ -16,7 +16,7 @@ public class ForkJoinQuickSort extends RecursiveAction {
     }
     @Override
     protected void compute() {
-        if(array.length>granularity){
+        if(end-start+1>granularity){
             int pivotIndex = partition(array, start, end);
 
             ForkJoinQuickSort left = new ForkJoinQuickSort(array, start, pivotIndex-1, granularity);

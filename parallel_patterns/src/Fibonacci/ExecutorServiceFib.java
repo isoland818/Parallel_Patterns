@@ -3,8 +3,6 @@ package Fibonacci;
 import java.util.concurrent.*;
 
 public class ExecutorServiceFib {
-
-//    public static final ExecutorService executorService = Executors.newFixedThreadPool(16);
     public static Long fib(int n, int granularity, ExecutorService executorService) throws ExecutionException, InterruptedException {
         if (n<=granularity) {
             return SequentialFib.fib(n);

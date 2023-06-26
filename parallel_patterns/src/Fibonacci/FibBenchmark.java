@@ -17,23 +17,26 @@ public class FibBenchmark {
         sequentialTime=sequentialFibTest(nFib);
         System.out.println();
 
-        forkJoinTest(nFib, granularity, poolSize);
+        threadingFibTest(nFib, granularity);
         System.out.println();
 
-        cachedThreadFibTest(nFib, granularity);
-        System.out.println();
-
-        fixedThreadFibTest(nFib, granularity);
-        System.out.println();
-
-        scheduledThreadFibTest(nFib, granularity);
-        System.out.println();
-
-        singleThreadFibTest(nFib, granularity);
-        System.out.println();
-
-        parallelStreamFibTest(nFib);
-        System.out.println();
+//        forkJoinTest(nFib, granularity, poolSize);
+//        System.out.println();
+//
+//        cachedThreadFibTest(nFib, granularity);
+//        System.out.println();
+//
+//        fixedThreadFibTest(nFib, granularity);
+//        System.out.println();
+//
+//        scheduledThreadFibTest(nFib, granularity);
+//        System.out.println();
+//
+//        singleThreadFibTest(nFib, granularity);
+//        System.out.println();
+//
+//        parallelStreamFibTest(nFib);
+//        System.out.println();
     }
 
     public static long sequentialFibTest (int n) {
@@ -42,6 +45,22 @@ public class FibBenchmark {
         long etime = System.nanoTime();
         System.out.println("Time cost by sequential solution: " + (etime-stime) + " nm");
         return etime-stime;
+    }
+
+    public static long threadingFibTest(int n, int granularity) {
+        ThreadingFib fib = new ThreadingFib(n, granularity);
+        long stime = System.nanoTime();
+        fib.start();
+        try{
+            fib.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        long etime = System.nanoTime();
+        System.out.println("Result from threading solution is: "+fib.getResult());
+        System.out.println("Time cost by threading solution is: " + (etime-stime)+ " nm");
+        System.out.println("Speedup is: " + sequentialTime/(etime-stime));
+        return (etime-stime);
     }
 
     public static long forkJoinTest (int n, int granularity, int poolSize) {

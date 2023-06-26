@@ -11,15 +11,15 @@ import java.util.concurrent.Future;
 public class ExecutorServiceQuickSort {
     public static void quickSort(int[] array, int start, int end, int granularity, ExecutorService executorService) {
         if (start < end) {
-            if (end - start + 1 >= granularity) {
+            if (end - start + 1 <= granularity) {
+                SequentialQuickSort.quickSort(array, start, end);
+
+            } else {
                 int pivotIndex = partition(array, start, end);
 
                 executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, executorService));
-                executorService.submit(() -> quickSort(array, pivotIndex + 1, start, granularity, executorService));
-            } else {
-                SequentialQuickSort.quickSort(array, start, end);
+                executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, executorService));
             }
-            executorService.shutdown();
         }
     }
 
@@ -29,7 +29,7 @@ public class ExecutorServiceQuickSort {
                 int pivotIndex = partition(array, start, end);
 
                 executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, Executors.newFixedThreadPool(2)));
-                executorService.submit(() -> quickSort(array, pivotIndex + 1, start, granularity, Executors.newFixedThreadPool(2)));
+                executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, Executors.newFixedThreadPool(2)));
             } else {
                 SequentialQuickSort.quickSort(array, start, end);
             }
@@ -47,7 +47,6 @@ public class ExecutorServiceQuickSort {
                 swap(array, i, j);
             }
         }
-
         swap(array, i + 1, end);
         return i + 1;
     }
