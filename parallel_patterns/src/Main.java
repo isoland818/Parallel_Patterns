@@ -21,7 +21,6 @@ public class Main {
         for (int j = 0; j < 64; j++) {
             array[j] = (int) (Math.random() * 200);
         }
-
         NQueensBenchmark.nQueensBenchmark();
     }
 

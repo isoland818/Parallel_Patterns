@@ -11,14 +11,14 @@ public class ExecutorServiceNQueens {
         List<int[][]> solutions = new ArrayList<>();
         if (n-col<=granularity) {
             SequentialNQueens.solveNQueens(board, col, n, solutions);
-            System.out.println(solutions.size());
             return solutions;
         }
         List<Future<List<int[][]>>> futures = new ArrayList<>();
         for (int i=0; i<n; i++){
             if (isSafe(board, i, col, n)){
                 board[i][col]=1;
-                futures.add(executorService.submit(() -> nQueens(copyBoard(board), n, col+1, granularity)));
+                int[][] copy = copyBoard(board);
+                futures.add(executorService.submit(() -> nQueens(copy, n, col+1, granularity)));
                 board[i][col]=0;
             }
         }

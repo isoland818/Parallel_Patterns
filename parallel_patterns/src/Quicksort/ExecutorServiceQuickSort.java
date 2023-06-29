@@ -13,17 +13,12 @@ public class ExecutorServiceQuickSort {
         if (start < end) {
             if (end - start + 1 <= granularity) {
                 SequentialQuickSort.quickSort(array, start, end);
-
             } else {
                 int pivotIndex = partition(array, start, end);
 
                 executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, executorService));
                 executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, executorService));
             }
-<<<<<<< HEAD
-=======
-
->>>>>>> be3c24e771a5c786c48a578bb8e3a2e21745cc8f
         }
     }
 
@@ -64,5 +59,14 @@ public class ExecutorServiceQuickSort {
 
     private static void baseSort(int[] array, int start, int end){
 
+    }
+
+    public static void printBoard(int[][] board, int n){
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(board[i][j]+"  ");
+            }
+            System.out.println();
+        }
     }
 }

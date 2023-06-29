@@ -10,8 +10,8 @@ public class NQueensBenchmark {
     private static long sequentialTime = 1;
 
     public static void nQueensBenchmark () {
-        int nQueen = 14;
-        int granularity = 13;
+        int nQueen = 7;
+        int granularity = 5;
 
         sequentialNQueensTest(nQueen);
         System.out.println();
@@ -19,11 +19,11 @@ public class NQueensBenchmark {
         forkJoinNQueensTest(nQueen, granularity);
         System.out.println();
 
-//        cachedThreadPoolTest(nQueen, granularity);
-//        System.out.println();
-
-        threadingNQueensTest(nQueen, granularity);
+        cachedThreadPoolTest(nQueen, granularity);
         System.out.println();
+
+//        threadingNQueensTest(nQueen, granularity);
+//        System.out.println();
     }
 
     public static void sequentialNQueensTest(int nQueens){

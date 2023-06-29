@@ -5,7 +5,7 @@ import Fibonacci.ForkJoinFib;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
-public class ForkJoinKnapsack extends RecursiveTask<int> {
+public class ForkJoinKnapsack extends RecursiveTask<Integer> {
     public static int[] values;
     public static int[] weights;
 
@@ -21,7 +21,7 @@ public class ForkJoinKnapsack extends RecursiveTask<int> {
         this.capacity=capacity;
     }
     @Override
-    protected int compute() {
+    protected Integer compute() {
         if (index < granularity) {
             return SequentialKnapsack.knapsack(values, weights, capacity, index);
         }
