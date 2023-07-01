@@ -24,6 +24,8 @@ public class QuickSort {
 
         Future<Range> future = stream.input(new Range(array, 0, array.length-1));
 
+        skandium.shutdown();
+
         future.get();
     }
 

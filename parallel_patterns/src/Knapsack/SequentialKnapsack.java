@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 public class SequentialKnapsack {
 
-    // Helper function to solve the knapsack problem recursively
     public static int knapsack(int[] values, int[] weights, int capacity, int index) {
         if (index < 0 || capacity == 0) {
             return 0;

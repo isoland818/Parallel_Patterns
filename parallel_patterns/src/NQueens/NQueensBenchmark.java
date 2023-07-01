@@ -1,26 +1,41 @@
 package NQueens;
 
-import java.sql.Time;
+
+
+import NQueens.Skandium.NQueens;
+import cl.niclabs.skandium.Skandium;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.*;
 
 public class NQueensBenchmark {
     private static long sequentialTime = 1;
 
     public static void nQueensBenchmark () {
-        int nQueen = 7;
-        int granularity = 5;
+        int nQueen = 14;
+        int granularity = 13;
 
         sequentialNQueensTest(nQueen);
         System.out.println();
 
-        forkJoinNQueensTest(nQueen, granularity);
-        System.out.println();
+        try{
+            long stime = System.nanoTime();
+            NQueens.nQueens(nQueen, granularity, 8);
+            long etime = System.nanoTime();
+            System.out.println("Time cost by Skandium solution is: "+(etime-stime)+" nm");
+            System.out.println("Speedup is: "+sequentialTime/(etime-stime));
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        cachedThreadPoolTest(nQueen, granularity);
-        System.out.println();
+
+
+//        forkJoinNQueensTest(nQueen, granularity);
+//        System.out.println();
+//
+//        cachedThreadPoolTest(nQueen, granularity);
+//        System.out.println();
 
 //        threadingNQueensTest(nQueen, granularity);
 //        System.out.println();
@@ -35,8 +50,8 @@ public class NQueensBenchmark {
         sequentialTime = etime-stime;
     }
 
-    public static long forkJoinNQueensTest (int nQueen, int granularity) {
-        ForkJoinPool pool = new ForkJoinPool(16);
+    public static long forkJoinNQueensTest (int nQueen, int granularity, int pthreads) {
+        ForkJoinPool pool = new ForkJoinPool(pthreads);
         int[][] board = new int[nQueen][nQueen];
         ForkJoinNQueens nQueens = new ForkJoinNQueens(nQueen, 0, granularity, board);
         long stime = System.nanoTime();
@@ -63,10 +78,6 @@ public class NQueensBenchmark {
         System.out.println("Time cost by cached thread pool solution is: "+(etime-stime)+" nm");
         System.out.println("Speedup is: "+sequentialTime/(etime-stime));
 
-
-//        System.out.println("Number of solutions produced by cached thread pool is: "+solutions.size());
-//        System.out.println("Time cost by cached thread pool solution is: "+(etime-stime)+" nm");
-//        System.out.println("Speedup is: "+sequentialTime/(etime-stime));
         return etime-stime;
     }
 
@@ -84,6 +95,21 @@ public class NQueensBenchmark {
         long etime = System.nanoTime();
         System.out.println("Number of solutions produced by threading is: "+solutions.size());
         System.out.println("Time cost by threading solution is: "+(etime-stime)+" nm");
+        System.out.println("Speedup is: "+sequentialTime/(etime-stime));
+        return etime-stime;
+    }
+
+    public static long skandiumNQueensTest (int nQueen, int granularity, int pthreads) {
+        long stime = System.nanoTime();
+        List<int[][]> solutions = new ArrayList<>();
+        try{
+            solutions = NQueens.nQueens(nQueen, granularity, pthreads);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        long etime = System.nanoTime();
+        System.out.println("Number of solutions produced by Skandium is: "+solutions.size());
+        System.out.println("Time cost by skandium solution is: "+(etime-stime)+" nm");
         System.out.println("Speedup is: "+sequentialTime/(etime-stime));
         return etime-stime;
     }

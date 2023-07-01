@@ -22,15 +22,9 @@ public class ExecutorServiceNQueens {
                 board[i][col]=0;
             }
         }
-        System.out.println("col: "+col+", futures: "+futures.size());
         executorService.shutdown();
         for(Future<List<int[][]>> future: futures) {
             solutions.addAll(future.get());
-        }
-        try{
-            executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-        }catch(InterruptedException e){
-            e.printStackTrace();
         }
         return solutions;
     }

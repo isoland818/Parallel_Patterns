@@ -34,7 +34,6 @@ public class ForkJoinNQueens extends RecursiveTask<List<int[][]>> {
                 board[i][col]=0;
             }
         }
-        System.out.println("col: "+col+", subtasks: "+subTasks.size());
         invokeAll(subTasks);
         for (ForkJoinNQueens subTask: subTasks) {
             solutions.addAll(subTask.join());

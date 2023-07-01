@@ -1,5 +1,8 @@
 package Fibonacci;
 
+import Fibonacci.Skandium.Fib;
+import cl.niclabs.skandium.Skandium;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -124,23 +127,6 @@ public class FibBenchmark {
         return etime-stime;
     }
 
-    public static long parallelStreamFibTest (int n) {
-        long stime = System.nanoTime();
-        System.out.println(ParallelStreamFib.fib(n));
-        long etime = System.nanoTime();
-        System.out.println("Time cost by parallelStream is: " + (etime-stime) + " nm");
-        System.out.println("Speedup is: " + sequentialTime/(etime-stime));
-        return etime-stime;
-    }
-
-//    public static void virtualThreadFibTest (int n, int granularity) {
-//        ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
-//        long stime = System.nanoTime();
-//        executorServiceTest(n, granularity, executorService);
-//        long etime = System.nanoTime();
-//        System.out.println("Time cost by fixedThreadPool is: " + (etime-stime) + " nm");
-//    }
-
     public static void executorServiceTest (int n, int granularity, ExecutorService executorService) {
         try{
             System.out.println("Result from ExecutorService solution is: " + ExecutorServiceFib.fib(n, granularity, executorService));
@@ -151,5 +137,18 @@ public class FibBenchmark {
         }
     }
 
-
+    public static long skandiumFibTest(int n, int granularity, int pthreads) {
+        long stime = System.nanoTime();
+        long result=0;
+        try{
+            result = Fib.fib(n, granularity, pthreads);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        long etime = System.nanoTime();
+        System.out.println("Result from Skandium solution is: "+ result);
+        System.out.println("Time cost by Skandium solution is: " + (etime-stime)+ " nm");
+        System.out.println("Speedup is: " + sequentialTime/(etime-stime));
+        return (etime-stime);
+    }
 }
