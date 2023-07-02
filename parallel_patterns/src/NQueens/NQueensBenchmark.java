@@ -13,29 +13,17 @@ public class NQueensBenchmark {
     private static long sequentialTime = 1;
 
     public static void nQueensBenchmark () {
-        int nQueen = 14;
-        int granularity = 13;
+        int nQueen = 7;
+        int granularity = 5;
 
-        sequentialNQueensTest(nQueen);
-        System.out.println();
-
-        try{
-            long stime = System.nanoTime();
-            NQueens.nQueens(nQueen, granularity, 8);
-            long etime = System.nanoTime();
-            System.out.println("Time cost by Skandium solution is: "+(etime-stime)+" nm");
-            System.out.println("Speedup is: "+sequentialTime/(etime-stime));
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
+//        sequentialNQueensTest(nQueen);
+//        System.out.println();
 
 //        forkJoinNQueensTest(nQueen, granularity);
 //        System.out.println();
 //
-//        cachedThreadPoolTest(nQueen, granularity);
-//        System.out.println();
+        cachedThreadPoolTest(nQueen, granularity);
+        System.out.println();
 
 //        threadingNQueensTest(nQueen, granularity);
 //        System.out.println();

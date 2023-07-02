@@ -17,7 +17,7 @@ public class SequentialAQ {
     }
 
     public static double func (double x) {
-        double y = 8;
-        return y;
+        return Math.pow(x, 3) / 32 - Math.pow(x, 2) / 8 - 6 * x + 50;
+//        return 8;
     }
 }

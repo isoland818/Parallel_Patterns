@@ -20,15 +20,14 @@ public class ExecutorServiceAQ {
         }
     }
 
-    public static double quadNewPool (double left, double right, double fleft, double fright, double lrarea, double granularity) throws ExecutionException, InterruptedException {
+    public static double quadNewPool (double left, double right, double fleft, double fright, double lrarea, double granularity, ExecutorService executorService) throws ExecutionException, InterruptedException {
         double mid = (left + right) / 2;
         double fmid = SequentialAQ.func(mid);
         double larea = (fleft + fmid) * (mid - left) / 2;
         double rarea = (fmid + fright) * (right - mid) / 2;
         if (Math.abs((larea + rarea) - lrarea) > granularity) {
-            ExecutorService executorService = Executors.newFixedThreadPool(2);
-            Future<Double> leftSub = executorService.submit(() -> quad(left, mid, fleft, fmid, larea, granularity, executorService));
-            Future<Double> rightSub = executorService.submit(() -> quad(mid, right, fmid, fright, rarea, granularity, executorService));
+            Future<Double> leftSub = executorService.submit(() -> quad(left, mid, fleft, fmid, larea, granularity, Executors.newFixedThreadPool(2)));
+            Future<Double> rightSub = executorService.submit(() -> quad(mid, right, fmid, fright, rarea, granularity, Executors.newFixedThreadPool(2)));
             executorService.shutdown();
             return leftSub.get()+rightSub.get();
         } else {

@@ -25,6 +25,8 @@ public class Quad {
 
         Double result = future.get();
 
+        skandium.shutdown();
+
         return result;
     }
 }

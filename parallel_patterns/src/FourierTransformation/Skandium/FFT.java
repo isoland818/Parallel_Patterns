@@ -24,6 +24,8 @@ public class FFT {
 
         Future<Range> future = stream.input(new Range(x));
 
+        skandium.shutdown();
+
         return future.get().result;
     }
 

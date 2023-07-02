@@ -1,7 +1,10 @@
+import AdaptiveQuadrature.AQBenchmark;
 import Fibonacci.ExecutorServiceFib;
 import Fibonacci.FibBenchmark;
 import Fibonacci.ForkJoinFib;
 import Fibonacci.SequentialFib;
+import FourierTransformation.FFTBenchmark;
+import Knapsack.KnapsackBenchmark;
 import NQueens.ForkJoinNQueens;
 import NQueens.NQueensBenchmark;
 import NQueens.SequentialNQueens;
@@ -15,13 +18,15 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
 //        QuickSortBenchMark.sortBenchmark();
-        int[] array = new int[64];
-        for (int j = 0; j < 64; j++) {
-            array[j] = (int) (Math.random() * 200);
-        }
-        NQueensBenchmark.nQueensBenchmark();
+//        int[] array = new int[64];
+//        for (int j = 0; j < 64; j++) {
+//            array[j] = (int) (Math.random() * 200);
+//        }
+//        KnapsackBenchmark.knapsackBenchmark();
+//        AQBenchmark.AQBenchmark();
+        FFTBenchmark.fftBenchmark();
     }
 
     private static void executorService(int[] array){
