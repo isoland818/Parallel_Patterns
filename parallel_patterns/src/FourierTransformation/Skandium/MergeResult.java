@@ -6,8 +6,8 @@ import cl.niclabs.skandium.muscles.Merge;
 public class MergeResult implements Merge<Range, Range> {
     @Override
     public Range merge(Range[] ranges) throws Exception {
-        Complex[] evenResult = ranges[0].result;
-        Complex[] oddResult = ranges[1].result;
+        Complex[] evenResult = ranges[0].x;
+        Complex[] oddResult = ranges[1].x;
         int size = ranges[0].n;
         Complex[] result = new Complex[size*2];
         for (int i = 0; i < size; i++) {

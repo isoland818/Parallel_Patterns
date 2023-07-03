@@ -1,8 +1,5 @@
 package Quicksort;
 
-import Fibonacci.ExecutorServiceFib;
-import Fibonacci.SequentialFib;
-
 import java.util.concurrent.*;
 
 public class ExecutorServiceQuickSort {
@@ -13,8 +10,8 @@ public class ExecutorServiceQuickSort {
             } else {
                 int pivotIndex = partition(array, start, end);
 
-                Future leftFuture = executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, executorService));
-                Future rightFuture = executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, executorService));
+                Future<?> leftFuture = executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, executorService));
+                Future<?> rightFuture = executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, executorService));
                 while (!leftFuture.isDone() || ! rightFuture.isDone());
             }
         }

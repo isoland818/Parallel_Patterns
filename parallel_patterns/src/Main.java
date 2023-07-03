@@ -19,9 +19,9 @@ import java.util.concurrent.*;
 
 public class Main {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        QuickSortBenchMark.sortBenchmark();
+//        QuickSortBenchMark.sortBenchmark();
 //        AQBenchmark.AQBenchmark();
-//        FFTBenchmark.fftBenchmark();
+        FFTBenchmark.fftBenchmark();
     }
 
     private static void executorService(int[] array){

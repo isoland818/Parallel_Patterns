@@ -26,4 +26,8 @@ public class Complex {
         double newImag = this.real * other.imag + this.imag * other.real;
         return new Complex(newReal, newImag);
     }
+
+    public boolean equals(Complex other) {
+        return this.real == other.real && this.imag == other.imag;
+    }
 }

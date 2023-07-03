@@ -17,6 +17,9 @@ public class AQBenchmark {
         sequentialTest(left, right, fleft, fright);
         System.out.println();
 
+        threadingTest(left, right, fleft, fright, granularity);
+        System.out.println();
+
         forkJoinTest(left, right, fleft, fright, granularity);
         System.out.println();
 
@@ -36,6 +39,22 @@ public class AQBenchmark {
         long etime = System.nanoTime();
         sequentialTime = etime-stime;
         System.out.println("Time cost by sequential solution is: " + (etime-stime));
+    }
+
+    public static void threadingTest(double left, double right, double fleft, double fright, double granularity) {
+        long stime = System.nanoTime();
+        ThreadingAQ quad = new ThreadingAQ(left, right, fleft, fright, 0, granularity);
+        quad.start();
+        try {
+            quad.join();
+            double result = quad.getResult();
+            long etime = System.nanoTime();
+            System.out.println("Result produced by threading is: " + result);
+            System.out.println("Time cost by threading is: " + (etime-stime));
+            System.out.println("Speedup is: " + sequentialTime/(etime-stime));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void forkJoinTest(double left, double right, double fleft, double fright, double granularity) {
@@ -61,10 +80,9 @@ public class AQBenchmark {
     }
 
     public static void fixedPoolTest(double left, double right, double fleft, double fright, double granularity) throws ExecutionException, InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
         long stime = System.nanoTime();
-        Future<Double> future = executorService.submit(() -> ExecutorServiceAQ.quadNewPool(left, right, fleft, fright, 0, granularity, executorService));
-        System.out.println("Result produced by fixed thread pool is: " + future.get());
+        double result = ExecutorServiceAQ.quadNewPool(left, right, fleft, fright, 0, granularity, Executors.newFixedThreadPool(2));
+        System.out.println("Result produced by fixed thread pool is: " + result);
         long etime = System.nanoTime();
         System.out.println("Time cost by fixed thread pool solution is: " + (etime-stime));
         System.out.println("Speedup is: " + sequentialTime/(etime-stime));

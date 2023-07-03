@@ -1,5 +1,7 @@
 package Quicksort;
 
+import Quicksort.SkandiumQuickSort.QuickSort;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.function.Function;
 public class QuickSortBenchMark {
     private static List<int[]> cases = new ArrayList<>();
     private static List<int[]> results = new ArrayList<>();
-    private static int size = 10000;
+    private static int size = 32795;
     private static long sequentialTime=1;
 
     static {
@@ -17,22 +19,24 @@ public class QuickSortBenchMark {
     }
 
     public static void sortBenchmark () {
-        int granularity = 256;
+        int granularity = 4096;
 
         SequentialQuickSortTest();
         System.out.println();
 
-//        ThreadingQuickSortTest(granularity);
-//        System.out.println();
+        ThreadingQuickSortTest(granularity);
+        System.out.println();
 
-//        ForkJoinQuickSortTest(granularity, 8);
-//        System.out.println();
-//
+        ForkJoinQuickSortTest(granularity, 8);
+        System.out.println();
+
         cachedThreadPoolTest(granularity);
         System.out.println();
-//
-//        fixedThreadPoolTest(granularity);
-//        System.out.println();
+
+        fixedThreadPoolTest(granularity);
+        System.out.println();
+
+
 
 
     }
@@ -47,7 +51,7 @@ public class QuickSortBenchMark {
         }
     }
 
-    public static long SequentialQuickSortTest () {
+    public static void SequentialQuickSortTest () {
         long totalTime = 0;
         for (int i = 0; i < cases.size(); i++) {
             int[] curCase = copyCase(cases.get(i));
@@ -56,12 +60,11 @@ public class QuickSortBenchMark {
             totalTime+=System.nanoTime()-stime;
             results.add(curCase);
         }
-        System.out.println("Average time cost by Sequential Quick Sort is: " + totalTime/5 + " nm");
-        sequentialTime=totalTime/5;
-        return totalTime/5;
+        System.out.println("Average time cost by Sequential Quick Sort is: " + totalTime/cases.size() + " nm");
+        sequentialTime=totalTime/cases.size();
     }
 
-    public static long ThreadingQuickSortTest (int granularity){
+    public static void ThreadingQuickSortTest (int granularity){
         long totalTime = 0;
         for (int i = 0; i < cases.size(); i++) {
             int[] curCase = cases.get(i);
@@ -76,13 +79,11 @@ public class QuickSortBenchMark {
             totalTime+=System.nanoTime()-stime;
             System.out.println(i+": "+checkSort(curCase, results.get(i)));
         }
-        System.out.println("Average time cost by Threading Sort is: " + totalTime/5 + " nm");
-        System.out.println("Speedup is: " + 5*sequentialTime/totalTime);
-        sequentialTime=totalTime/5;
-        return totalTime/5;
+        System.out.println("Average time cost by Threading Sort is: " + totalTime/cases.size() + " nm");
+        System.out.println("Speedup is: " + cases.size()*sequentialTime/totalTime);
     }
 
-    public static long ForkJoinQuickSortTest (int granularity, int poolSize) {
+    public static void ForkJoinQuickSortTest (int granularity, int poolSize) {
         ForkJoinPool pool = new ForkJoinPool(poolSize);
         long totalTime = 0;
         for (int i = 0; i < cases.size(); i++) {
@@ -93,32 +94,28 @@ public class QuickSortBenchMark {
             totalTime+=System.nanoTime()-stime;
             System.out.println(i+": "+checkSort(curCase, results.get(i)));
         }
-        System.out.println("Average time cost by ForkJoin Quick Sort is: " + totalTime/5 + " nm");
-        System.out.println("Speedup is: " + 5*sequentialTime/totalTime);
-        return totalTime/5;
+        System.out.println("Average time cost by ForkJoin Quick Sort is: " + totalTime/cases.size() + " nm");
+        System.out.println("Speedup is: " + cases.size()*sequentialTime/totalTime);
     }
 
-    public static long cachedThreadPoolTest (int granulartiy) {
+    public static void cachedThreadPoolTest (int granulartiy) {
         long totalTime = 0;
         for (int i = 0; i < cases.size(); i++) {
             int[] curCase = cases.get(i);
-            ExecutorService executorService = Executors.newCachedThreadPool()   ;
+            ExecutorService executorService = Executors.newCachedThreadPool();
             long stime = System.nanoTime();
-//            ExecutorServiceQuickSort.quickSort(curCase, 0, curCase.length-1, granulartiy, executorService);
-            Future future = executorService.submit(() -> ExecutorServiceQuickSort.quickSort(curCase, 0, curCase.length-1, granulartiy, executorService));
-            while(!future.isDone());
+            ExecutorServiceQuickSort.quickSort(curCase, 0, curCase.length-1, granulartiy, executorService);
+//            Future future = executorService.submit(() -> ExecutorServiceQuickSort.quickSort(curCase, 0, curCase.length-1, granulartiy, executorService));
+//            while(!future.isDone());
             totalTime+=System.nanoTime()-stime;
             executorService.shutdown();
-            printArray(results.get(i));
-            printArray(curCase);
             System.out.println(i+": "+checkSort(curCase, results.get(i)));
         }
         System.out.println("Average time cost by Cached Thread Pool Quick Sort is: " + totalTime/cases.size() + " nm");
         System.out.println("Speedup is: " + cases.size()*sequentialTime/totalTime);
-        return totalTime/5;
     }
 
-    public static long fixedThreadPoolTest (int granulartiy) {
+    public static void fixedThreadPoolTest (int granulartiy) {
         long totalTime = 0;
         for (int i = 0; i < cases.size(); i++) {
             int[] curCase = cases.get(i);
@@ -135,8 +132,21 @@ public class QuickSortBenchMark {
                 throw new RuntimeException(e);
             }
         }
-        System.out.println("Average time cost by Fixed Thread Pool Quick Sort is: " + totalTime/5 + " nm");
-        return totalTime/5;
+        System.out.println("Average time cost by Fixed Thread Pool Quick Sort is: " + totalTime/cases.size() + " nm");
+        System.out.println("Speedup is: " + cases.size()*sequentialTime/totalTime);
+    }
+
+    public static void skandiumTest(int granularity) throws ExecutionException, InterruptedException {
+        long totalTime = 0;
+        for (int i = 0; i < cases.size(); i++) {
+            int[] curCase = cases.get(i);
+            long stime = System.nanoTime();
+            QuickSort.quickSort(curCase);
+            totalTime+=System.nanoTime()-stime;
+            System.out.println(i+": "+checkSort(curCase, results.get(i)));
+        }
+        System.out.println("Average time cost by Fixed Thread Pool Quick Sort is: " + totalTime/cases.size() + " nm");
+        System.out.println("Speedup is: " + cases.size()*sequentialTime/totalTime);
     }
 
     public static int[] copyCase (int[] curCase) {
