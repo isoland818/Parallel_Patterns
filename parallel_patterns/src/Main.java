@@ -19,14 +19,9 @@ import java.util.concurrent.*;
 
 public class Main {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-//        QuickSortBenchMark.sortBenchmark();
-//        int[] array = new int[64];
-//        for (int j = 0; j < 64; j++) {
-//            array[j] = (int) (Math.random() * 200);
-//        }
-//        KnapsackBenchmark.knapsackBenchmark();
+        QuickSortBenchMark.sortBenchmark();
 //        AQBenchmark.AQBenchmark();
-        FFTBenchmark.fftBenchmark();
+//        FFTBenchmark.fftBenchmark();
     }
 
     private static void executorService(int[] array){

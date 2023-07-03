@@ -3,10 +3,7 @@ package Quicksort;
 import Fibonacci.ExecutorServiceFib;
 import Fibonacci.SequentialFib;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class ExecutorServiceQuickSort {
     public static void quickSort(int[] array, int start, int end, int granularity, ExecutorService executorService) {
@@ -16,19 +13,20 @@ public class ExecutorServiceQuickSort {
             } else {
                 int pivotIndex = partition(array, start, end);
 
-                executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, executorService));
-                executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, executorService));
+                Future leftFuture = executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, executorService));
+                Future rightFuture = executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, executorService));
+                while (!leftFuture.isDone() || ! rightFuture.isDone());
             }
         }
     }
 
     public static void quickSortNewPool(int[] array, int start, int end, int granularity, ExecutorService executorService) {
+        System.out.println("Range is: " + start + " to " +end);
         if (start < end) {
-            if (end - start + 1 >= granularity) {
+            if (end - start >= granularity) {
                 int pivotIndex = partition(array, start, end);
-
-                executorService.submit(() -> quickSort(array, start, pivotIndex - 1, granularity, Executors.newFixedThreadPool(2)));
-                executorService.submit(() -> quickSort(array, pivotIndex + 1, end, granularity, Executors.newFixedThreadPool(2)));
+                executorService.submit(() -> quickSortNewPool(array, start, pivotIndex - 1, granularity, Executors.newFixedThreadPool(2)));
+                executorService.submit(() -> quickSortNewPool(array, pivotIndex + 1, end, granularity, Executors.newFixedThreadPool(2)));
             } else {
                 SequentialQuickSort.quickSort(array, start, end);
             }
@@ -55,10 +53,6 @@ public class ExecutorServiceQuickSort {
         int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
-    }
-
-    private static void baseSort(int[] array, int start, int end){
-
     }
 
     public static void printBoard(int[][] board, int n){
